@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'drf_social_oauth2',
     # local apps
     'users.apps.UsersConfig',
+    'products.apps.ProductsConfig',
 ]
 
 MIDDLEWARE = [

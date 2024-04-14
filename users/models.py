@@ -30,7 +30,7 @@ class BuyerProfile(models.Model):
     phone_number = models.CharField(max_length=11)
     address = models.CharField(max_length=100)
     profile_picture = models.ImageField(upload_to='buyer_profile_pictures', null=True, blank=True)
-    #wishlist = models.ManyToManyField('products.Product', blank=True)
+    wishlist = models.ManyToManyField('products.Product', related_name='wishlist', blank=True)
     receive_notifications = models.BooleanField(default=True)
 
 
