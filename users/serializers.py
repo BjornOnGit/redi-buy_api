@@ -43,5 +43,5 @@ class BuyerProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuyerProfile
         fields = ['user', 'phone_number', 'address',
-                    'profile_picture', 'receive_notifications']
+                    'profile_picture', 'wishlist', 'receive_notifications']
         read_only_fields = ['user']
