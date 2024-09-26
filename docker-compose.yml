@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:5.0
+    container_name: redibuy_db
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app_container
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      MONGODB_URL: ${MONGODB_URL}
+      MONGODB_URL_PRODUCTION: ${MONGODB_URL_PRODUCTION}
+      REDIS_URL: redis://redis:6379
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongo
+      - redis
+      - celery_worker
+    networks:
+      - app-network
+
+  celery_worker:
+    user: "celery"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: celery_worker
+    command: celery -A app.celery_app worker --loglevel=info
+    depends_on:
+      - redis
+      - mongo
+    environment:
+      MONGODB_URL: ${MONGODB_URL}
+      MONGODB_URL_PRODUCTION: ${MONGODB_URL_PRODUCTION}
+      REDIS_URL: redis://redis:6379
+    networks:
+      - app-network
+volumes:
+  mongo-data:
+
+networks:
+  app-network:
+    driver: bridge

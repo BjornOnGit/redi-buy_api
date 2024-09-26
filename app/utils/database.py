@@ -13,7 +13,7 @@ def get_database_url():
 
 MONGODB_URL = os.environ.get("MONGODB_URL")
 MONGODB_URL_PRODUCTION = os.environ.get("MONGODB_URL_PRODUCTION")
-client = AsyncIOMotorClient(get_database_url)
+client = AsyncIOMotorClient(get_database_url())
 database = client.redibuy_db
 engine = AIOEngine(client, database='redibuy_db')
 
@@ -21,7 +21,7 @@ async def get_database():
     return database
 
 def get_sync_engine():
-    sync_client = MongoClient(get_database_url)
+    sync_client = MongoClient(get_database_url())
     sync_engine = SyncEngine(sync_client, database='redibuy_db')
     return sync_engine
 

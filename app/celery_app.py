@@ -20,7 +20,7 @@ MAILGUN_DOMAIN = os.getenv('MAILGUN_DOMAIN')
 MAILGUN_API_KEY = os.getenv('MAILGUN_API_KEY')
 MAILGUN_SENDER_EMAIL = os.getenv('MAILGUN_SENDER_EMAIL', 'fhrancorey99@gmail.com')
 
-celery_app = Celery('tasks', broker='redis://localhost:6379/0')
+celery_app = Celery('tasks', broker='redis://redis:6379/0')
 
 celery_app.conf.task_routes = {
     'app.tasks.*': {'queue': 'main-queue'}
